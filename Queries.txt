@@ -1,0 +1,64 @@
+query allOrders {
+    allOrders {
+        ...orderInfo
+    }
+}
+
+query allOrdersFromDb {
+    ordersEnumerable {
+        ...orderInfo
+    }
+}
+
+query allOrdersProjected {
+    orders(where: { id: {eq: 1}}) {
+        pageInfo {
+            hasNextPage
+            hasPreviousPage
+        }
+        items {
+            ...orderInfo
+        }
+    }
+}
+
+
+query allOrdersSorted {
+    orders(order: { customer: {name: DESC}}) {
+        items {
+            ...orderInfo
+        }
+    }
+}
+
+query allOrdersPaged {
+    orders(take: 1, skip: 0) {
+        pageInfo {
+            hasNextPage
+            hasPreviousPage
+        }
+        items {
+            ...orderInfo
+        }
+    }
+}
+
+query getOrderById($id: Int!) {
+    orderById(id: $id) {
+        ...orderInfo
+    }
+}
+
+fragment orderInfo on Order {
+    customer {
+        name
+    }
+    orderStatus
+    orderTime
+    orderLines {
+        product {
+            name
+        }
+        quantity
+    }
+}
