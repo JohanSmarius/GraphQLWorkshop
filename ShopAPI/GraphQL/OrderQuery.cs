@@ -21,7 +21,7 @@ public class OrderQuery
             .Include(order => order.OrderLines).ThenInclude(orderline => orderline.Product)
             .Include(order => order.Customer);
     
-    [UseOffsetPaging]
+   // [UsePaging(IncludeTotalCount = true)]
     [UseProjection]
     [UseFiltering]
     [UseSorting]

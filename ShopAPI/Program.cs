@@ -10,17 +10,22 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddPooledDbContextFactory<OrderContext>(
+builder.Services.AddDbContextFactory<OrderContext>(
     options => options.UseSqlite("Data Source=Orders.db")
         .EnableSensitiveDataLogging()).AddLogging(Console.WriteLine);
 
 builder.Services.AddGraphQLServer()
     .AddQueryType<OrderQuery>()
-    .RegisterDbContext<OrderContext>(DbContextKind.Pooled)
+    .RegisterDbContextFactory<OrderContext>()
     .AddProjections()
     .AddFiltering()
-    .AddSorting().AddFiltering()
-    .SetPagingOptions(new PagingOptions() { DefaultPageSize = 1, MaxPageSize = 1 });
+    .AddSorting()
+    .ModifyPagingOptions(options =>
+    {
+        options.DefaultPageSize = 10;
+        options.MaxPageSize = 100;
+    });
+    //.SetPagingOptions(new PagingOptions() { DefaultPageSize = 1, MaxPageSize = 1 });
 
 
 var app = builder.Build();
